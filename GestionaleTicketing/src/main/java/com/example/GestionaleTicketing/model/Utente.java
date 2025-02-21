@@ -2,7 +2,10 @@ package com.example.GestionaleTicketing.model;
 
 import java.util.List;
 
+import org.hibernate.validator.constraints.Length;
+
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -12,12 +15,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 public class Utente {
 	
 	
-	enum Ruolo {
+	public enum Ruolo {
 		Utente,
 		Operatore,
 		Admin
@@ -27,12 +32,23 @@ public class Utente {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	Long id;
 	
+	@NotBlank(message = "Nome è obbligatorio")
+	@Column(unique = true)
+
 	private String nome;
 	
+	@NotBlank(message = "Cognome è obbligatorio")
+	@Column(unique = true)
+
 	private String cognome;
 	
+	@NotBlank(message = "Email è obbligatoria")
+	@Email(message = "Formato email non valido")
+	@Column(unique = true)
 	private String email;
 	
+	@NotBlank(message = "Password è obbligatoria")
+    @Length(min = 5, max = 10, message = "Password deve essere minimo di 5 e massimo 10 caratteri")
 	private String password;
 	
 	private String token;

@@ -17,7 +17,7 @@ public class TokenService {
 	@Autowired
     private UtenteRepository utenteRepository;
 
-    public String generateToken(String email, String password) {
+    public Utente generateToken(String email, String password) {
     	
        Optional<Utente> optionalUser = utenteRepository.findByEmail(email);
         
@@ -27,7 +27,7 @@ public class TokenService {
         
         Utente user = optionalUser.get();
         
-        if(!user.getEmail().equals(email)&& !user.getPassword().equals(password)) {
+        if(!user.getEmail().equals(email) || !user.getPassword().equals(password)) {
         	 throw new IllegalArgumentException("Credenziali non valide");
         }
     	
@@ -35,9 +35,7 @@ public class TokenService {
               
         user.setToken(token);
 
-        utenteRepository.save(user);
-
-        return token;
+        return utenteRepository.save(user);
     }
 
 
