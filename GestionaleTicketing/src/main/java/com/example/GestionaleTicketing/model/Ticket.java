@@ -1,0 +1,135 @@
+package com.example.GestionaleTicketing.model;
+
+import java.time.LocalDate;
+
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
+
+@Entity
+public class Ticket {
+	
+	enum Status {
+		APERTO,
+		VISUALIZZATO,
+		IN_LAVORAZIONE,
+		CHIUSO
+	}
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+	
+	private String oggetto;
+	
+	@Enumerated(EnumType.STRING)
+	private Status status;
+	
+	private LocalDate dataApertura;
+	
+	private LocalDate dataChiusura;
+	
+	@ManyToOne
+	@JoinColumn(name = "idCategoria")
+	private CategoriaTicket categoriaTicket;
+	
+	@ManyToOne
+	@JoinColumn(name = "idUtente", nullable = false)
+	private Utente utente;
+	
+	@ManyToOne
+	@JoinColumn(name = "idOperatore", nullable = true)
+	@OnDelete(action = OnDeleteAction.SET_NULL)
+	private Utente operatore;
+	
+	@OneToOne(mappedBy = "ticket")
+	private Messaggio messaggio;
+	
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getOggetto() {
+		return oggetto;
+	}
+
+	public void setOggetto(String oggetto) {
+		this.oggetto = oggetto;
+	}
+
+	public Status getStatus() {
+		return status;
+	}
+
+	public void setStatus(Status status) {
+		this.status = status;
+	}
+
+	public LocalDate getDataApertura() {
+		return dataApertura;
+	}
+
+	public void setDataApertura(LocalDate dataApertura) {
+		this.dataApertura = dataApertura;
+	}
+
+	public LocalDate getDataChiusura() {
+		return dataChiusura;
+	}
+
+	public void setDataChiusura(LocalDate dataChiusura) {
+		this.dataChiusura = dataChiusura;
+	}
+
+	public CategoriaTicket getCategoriaTicket() {
+		return categoriaTicket;
+	}
+
+	public void setCategoriaTicket(CategoriaTicket categoriaTicket) {
+		this.categoriaTicket = categoriaTicket;
+	}
+
+	public Utente getUtente() {
+		return utente;
+	}
+
+	public void setUtente(Utente utente) {
+		this.utente = utente;
+	}
+
+	public Utente getOperatore() {
+		return operatore;
+	}
+
+	public void setOperatore(Utente operatore) {
+		this.operatore = operatore;
+	}
+
+	public Messaggio getMessaggio() {
+		return messaggio;
+	}
+
+	public void setMessaggi(Messaggio messaggio) {
+		this.messaggio = messaggio;
+	}
+	
+	
+	
+	
+	
+
+}
