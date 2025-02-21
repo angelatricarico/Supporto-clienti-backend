@@ -2,6 +2,7 @@ package com.example.GestionaleTicketing.model;
 
 import java.time.LocalDate;
 
+
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -47,8 +48,8 @@ public class Ticket {
 	private Utente utente;
 	
 	@ManyToOne
-	@JoinColumn(name = "idOperatore", nullable = true)
-	@OnDelete(action = OnDeleteAction.SET_NULL)
+	@JoinColumn(name = "idOperatore")
+	//@OnDelete(action = OnDeleteAction.SET_NULL)
 	private Utente operatore;
 	
 	@OneToOne(mappedBy = "ticket")

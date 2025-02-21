@@ -44,7 +44,7 @@ public class Utente {
 	@OneToMany(mappedBy = "utente", cascade = CascadeType.REMOVE, orphanRemoval = true)
 	private List<Ticket> tickets;
 	
-	@OneToMany(mappedBy = "operatore", cascade = {}, orphanRemoval = false)
+	@OneToMany(mappedBy = "operatore")
 	private List<Ticket> ticketsOperatore;
 	
 	@Enumerated(EnumType.STRING)
