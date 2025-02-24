@@ -62,7 +62,7 @@ public class CategoriaTicketController {
 	}
 	
 	@PutMapping("/{id}")
-	public Object updateCategoriaTicket(@PathVariable Long id, @RequestBody CategoriaTicket categoriaTicket, HttpServletRequest request, HttpServletResponse response) {
+	public Object updateCategoriaTicket(@PathVariable Long id, @Valid @RequestBody CategoriaTicket categoriaTicket, HttpServletRequest request, HttpServletResponse response) {
 		Optional <Utente> admin = getAuthUser(request);
 		
 		if (admin.get().getRuolo() != Utente.Ruolo.Admin) {

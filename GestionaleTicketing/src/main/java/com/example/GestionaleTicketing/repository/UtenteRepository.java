@@ -18,5 +18,7 @@ public interface UtenteRepository extends JpaRepository<Utente, Long>{
 
 	List <Utente> findAllByRuolo(Ruolo ruolo);
 	
+	
+	
 
 }

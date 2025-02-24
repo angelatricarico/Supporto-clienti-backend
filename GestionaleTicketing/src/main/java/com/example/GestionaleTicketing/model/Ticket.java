@@ -2,9 +2,8 @@ package com.example.GestionaleTicketing.model;
 
 import java.time.LocalDate;
 
-
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -15,8 +14,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+
 public class Ticket {
 	
 	enum Status {
@@ -30,6 +32,7 @@ public class Ticket {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
+	@NotBlank(message = "Oggetto ticket è obbligatorio")
 	private String oggetto;
 	
 	@Enumerated(EnumType.STRING)
@@ -43,6 +46,10 @@ public class Ticket {
 	@JoinColumn(name = "idCategoria")
 	private CategoriaTicket categoriaTicket;
 	
+	public void setMessaggio(Messaggio messaggio) {
+		this.messaggio = messaggio;
+	}
+
 	@ManyToOne
 	@JoinColumn(name = "idUtente", nullable = false)
 	private Utente utente;
