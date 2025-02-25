@@ -58,6 +58,7 @@ public class TicketController {
 	//Visualizzazione tickets a seconda dei controlli effettuati sul token e ruolo
 	@GetMapping
 	public List <Ticket> getAllTickets(HttpServletRequest request, HttpServletResponse response ) {
+		
 		Optional <Utente> utente = getAuthUser(request);
 		
 		if (utente.get().getRuolo() == Utente.Ruolo.Utente) {
@@ -74,7 +75,9 @@ public class TicketController {
 	//Creazione nuovo ticket da utente
 	@PostMapping
 	public ResponseEntity<String>  createTicket(@Valid @RequestBody TicketDto ticketDto, HttpServletRequest request, HttpServletResponse response) {
+		
 	    Optional<Utente> optionalUtente = utenteRepository.findById(ticketDto.getUtenteId());
+	    
 	    if (!optionalUtente.isPresent()) {
 	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Utente non trovato");
 	    }
@@ -111,6 +114,7 @@ public class TicketController {
 	//Aggiornamento ticket in particolare da operatore (manuale e automatico per la data di chiusura)
 	@PutMapping("/{id}")
 	public ResponseEntity<?> updateTicket(@PathVariable Long id, @Valid @RequestBody TicketDto ticketDto, HttpServletRequest request) {
+		
 	    Optional<Utente> optOperatore = getAuthUser(request);
 		
 	    if (!optOperatore.isPresent() || optOperatore.get().getRuolo() != Utente.Ruolo.Operatore) {
@@ -123,25 +127,29 @@ public class TicketController {
 	    }
 	    
 	    Ticket existingTicket = optTicket.get();
-	    existingTicket.setStatus(ticketDto.getStatus());
 	    
-	    if (existingTicket.getStatus() == Ticket.Status.CHIUSO) {
-	    	existingTicket.setDataChiusura(LocalDate.now());
-		    ticketRepository.save(existingTicket);
-	    }
-	    
-	    Messaggio messaggio = existingTicket.getMessaggio();
-	    if (messaggio == null) {
-	        messaggio = new Messaggio(); 
-	        messaggio.setTicket(existingTicket);
-	    }
-	    messaggio.setCorpoOperatore(ticketDto.getTestoMessaggio());  
+	    if (existingTicket.getStatus() == Ticket.Status.CHIUSO || optOperatore.get().getCategoriaTicket() != existingTicket.getCategoriaTicket()) {
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Non sei autorizzato");
 
-	    messaggioRepository.save(messaggio);
+	    }
+	    
+
+	    if (ticketDto.getStatus() == Ticket.Status.CHIUSO) {
+	    	if (ticketDto.getTestoMessaggio() != null && ticketDto.getTestoMessaggio().trim() != "") {
+	    	  	existingTicket.setDataChiusura(LocalDate.now());
+			    Messaggio messaggio = existingTicket.getMessaggio();
+			    messaggio.setCorpoOperatore(ticketDto.getTestoMessaggio());
+			    messaggioRepository.save(messaggio);	
+	    	} else {
+		        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Non puoi chiudere il ticket senza aggiungere un messaggio");
+	    	}
+	  
+	    }
+	    
+	    existingTicket.setStatus(ticketDto.getStatus());
 	    ticketRepository.save(existingTicket);
 
 	    return ResponseEntity.ok(existingTicket);
-	
 	}
 	
 	

@@ -91,7 +91,7 @@ public class UtenteController {
 	}
 	
 	
-	//Creazione profilo utente da utente
+	//Aggiornamento profilo utente da utente
 	@PutMapping
 	public Object updateUtente(@RequestBody Utente utente, HttpServletRequest request, HttpServletResponse response) {
        	Optional<Utente> authUser = getAuthUser(request);
