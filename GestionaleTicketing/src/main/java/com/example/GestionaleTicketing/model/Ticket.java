@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -14,14 +15,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
-import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 
 public class Ticket {
 	
-	enum Status {
+	public enum Status {
 		APERTO,
 		VISUALIZZATO,
 		IN_LAVORAZIONE,
@@ -32,7 +32,7 @@ public class Ticket {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@NotBlank(message = "Oggetto ticket è obbligatorio")
+	//@NotBlank(message = "Oggetto ticket è obbligatorio")
 	private String oggetto;
 	
 	@Enumerated(EnumType.STRING)
@@ -45,10 +45,6 @@ public class Ticket {
 	@ManyToOne
 	@JoinColumn(name = "idCategoria")
 	private CategoriaTicket categoriaTicket;
-	
-	public void setMessaggio(Messaggio messaggio) {
-		this.messaggio = messaggio;
-	}
 
 	@ManyToOne
 	@JoinColumn(name = "idUtente", nullable = false)
@@ -59,7 +55,7 @@ public class Ticket {
 	//@OnDelete(action = OnDeleteAction.SET_NULL)
 	private Utente operatore;
 	
-	@OneToOne(mappedBy = "ticket")
+	@OneToOne(mappedBy = "ticket", cascade = CascadeType.ALL)
 	private Messaggio messaggio;
 	
 
@@ -130,13 +126,11 @@ public class Ticket {
 	public Messaggio getMessaggio() {
 		return messaggio;
 	}
-
-	public void setMessaggi(Messaggio messaggio) {
+	
+	
+	public void setMessaggio(Messaggio messaggio) {
 		this.messaggio = messaggio;
 	}
-	
-	
-	
 	
 	
 

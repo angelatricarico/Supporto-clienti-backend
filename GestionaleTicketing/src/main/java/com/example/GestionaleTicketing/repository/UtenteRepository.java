@@ -12,10 +12,13 @@ import com.example.GestionaleTicketing.model.Utente.Ruolo;
 @Repository
 public interface UtenteRepository extends JpaRepository<Utente, Long>{
 	
+	//Cerca utente per email
 	Optional <Utente> findByEmail(String email);
 	
+	//Cerca utente per token
 	Optional <Utente> findByToken(String token);
 
+	//Cerca lista utenti per ruolo
 	List <Utente> findAllByRuolo(Ruolo ruolo);
 	
 	

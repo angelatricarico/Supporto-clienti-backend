@@ -38,17 +38,23 @@ public class CategoriaTicketController {
 	@Autowired
 	CategoriaTicketRepository categoriaTicketRepository;
 	
+	
+	//Visualizzazione tutte le categorie da utente, operatore e admin
 	@GetMapping
 	public List <CategoriaTicket> getAllCategoriaTicket(HttpServletRequest request, HttpServletResponse response ) {
 		
 		return categoriaTicketRepository.findAll();
 	}
 	
+	
+	//Visualizzazione categoria in particolare da utente, operatore e admin
 	@GetMapping("/{id}")
 	public Object getCategoriaTicket(@PathVariable Long id) {
 		return categoriaTicketRepository.findById(id);
 	}
 	
+	
+	//Creazione nuova categoria da admin
 	@PostMapping
 	public Object createCategoriaTicket(@Valid @RequestBody CategoriaTicket categoriaTicket, HttpServletRequest request, HttpServletResponse response ) {
 		Optional <Utente> admin = getAuthUser(request);
@@ -61,6 +67,8 @@ public class CategoriaTicketController {
 		return categoriaTicketRepository.save(categoriaTicket);
 	}
 	
+	
+	//Modifica categoria esistente da admin
 	@PutMapping("/{id}")
 	public Object updateCategoriaTicket(@PathVariable Long id, @Valid @RequestBody CategoriaTicket categoriaTicket, HttpServletRequest request, HttpServletResponse response) {
 		Optional <Utente> admin = getAuthUser(request);
@@ -86,6 +94,9 @@ public class CategoriaTicketController {
     	return new ResponseEntity<>(existingCategoria, HttpStatus.OK);
 	}
 	
+	
+	
+	//Eliminazione categoria in particolare da admin
 	@DeleteMapping("/{id}")
 	public Object deleteCategoriaTicket(@PathVariable Long id, HttpServletRequest request, HttpServletResponse response) {
 		Optional <Utente> admin = getAuthUser(request);
@@ -106,9 +117,6 @@ public class CategoriaTicketController {
     	return new ResponseEntity<>(HttpStatus.OK);    	
 		
 	}
-	
-	
-	
 	
 	
 	private Optional<Utente> getAuthUser(HttpServletRequest request) {

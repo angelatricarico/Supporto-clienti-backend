@@ -59,6 +59,7 @@ public class UtenteController {
 		return utenteRepository.save(utente);
 	}
 	
+	//Visualizzazione di tutti gli utenti da admin
 	@GetMapping("/utentiAdmin")
 	public Object getUtenti(@RequestParam(value = "ruolo", defaultValue = " ") String ruolo, HttpServletRequest request, HttpServletResponse response ) {
 		Optional <Utente> admin = getAuthUser(request);
@@ -80,6 +81,7 @@ public class UtenteController {
 		
 	}
 	
+	//Visualizzazione utente specifico da utente
 	@GetMapping
 	public Utente getUtente(HttpServletRequest request, HttpServletResponse response ) {
 		Optional <Utente> utente = getAuthUser(request);
@@ -88,6 +90,8 @@ public class UtenteController {
 
 	}
 	
+	
+	//Creazione profilo utente da utente
 	@PutMapping
 	public Object updateUtente(@RequestBody Utente utente, HttpServletRequest request, HttpServletResponse response) {
        	Optional<Utente> authUser = getAuthUser(request);

@@ -51,8 +51,10 @@ public class Utente {
 	
 	@NotBlank(message = "Password è obbligatoria")
     @Length(min = 5, max = 10, message = "Password deve essere minimo di 5 e massimo 10 caratteri")
+	@JsonIgnore
 	private String password;
 	
+	@JsonIgnore
 	private String token;
 	
 	@ManyToOne
@@ -60,9 +62,11 @@ public class Utente {
 	private CategoriaTicket categoriaTicket;
 	
 	@OneToMany(mappedBy = "utente", cascade = CascadeType.REMOVE, orphanRemoval = true)
+	@JsonIgnore
 	private List<Ticket> tickets;
 	
 	@OneToMany(mappedBy = "operatore")
+	@JsonIgnore
 	private List<Ticket> ticketsOperatore;
 	
 	@Enumerated(EnumType.STRING)

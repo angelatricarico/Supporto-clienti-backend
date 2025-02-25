@@ -3,6 +3,7 @@ package com.example.GestionaleTicketing.model;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import jakarta.persistence.Column;
@@ -28,9 +29,11 @@ public class CategoriaTicket {
 	private String nomeCategoria;
 	
 	@OneToMany(mappedBy = "categoriaTicket")
+	@JsonIgnore
 	private List<Utente> utenti;
 	
 	@OneToMany(mappedBy = "categoriaTicket")
+	@JsonIgnore
 	private List<Ticket> tickets;
 
 	public Long getId() {
