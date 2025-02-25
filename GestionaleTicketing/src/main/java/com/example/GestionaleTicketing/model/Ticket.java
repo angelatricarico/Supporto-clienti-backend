@@ -15,10 +15,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-
 public class Ticket {
 	
 	public enum Status {
@@ -32,7 +32,7 @@ public class Ticket {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	//@NotBlank(message = "Oggetto ticket è obbligatorio")
+	@NotBlank(message = "Oggetto ticket è obbligatorio")
 	private String oggetto;
 	
 	@Enumerated(EnumType.STRING)

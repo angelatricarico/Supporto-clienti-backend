@@ -51,7 +51,6 @@ public class Utente {
 	
 	@NotBlank(message = "Password è obbligatoria")
     @Length(min = 5, max = 10, message = "Password deve essere minimo di 5 e massimo 10 caratteri")
-	@JsonIgnore
 	private String password;
 	
 	@JsonIgnore
