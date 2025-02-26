@@ -101,7 +101,7 @@ public class UtenteController {
     	existingUtente.setNome(utente.getNome());
     	existingUtente.setCognome(utente.getCognome());
     	existingUtente.setEmail(utente.getEmail());
-    	if (utente.getPassword() != null && utente.getPassword().trim().contentEquals("")) {
+    	if (utente.getPassword() != null && !utente.getPassword().trim().equalsIgnoreCase("")) {
     		existingUtente.setPassword(utente.getPassword());    		
     	}
     	
