@@ -41,7 +41,6 @@ public class UtenteController {
 	//Creazione profilo utente da utente
 	@PostMapping
 	public Utente createUtente(@Valid @RequestBody Utente utente) {
-
 		utente.setRuolo(Utente.Ruolo.Utente);
 		return utenteRepository.save(utente);
 	}
@@ -75,7 +74,6 @@ public class UtenteController {
 			return utenteRepository.findAllByRuolo(Utente.Ruolo.Operatore);
 		} else if (ruolo.equalsIgnoreCase(Utente.Ruolo.Utente.toString())) {
 			return utenteRepository.findAllByRuolo(Utente.Ruolo.Utente);
-			
 		}
     	return Collections.emptyList(); 
 		
@@ -85,11 +83,8 @@ public class UtenteController {
 	@GetMapping
 	public Utente getUtente(HttpServletRequest request, HttpServletResponse response ) {
 		Optional <Utente> utente = getAuthUser(request);
-		
 		return utente.get();
-
 	}
-	
 	
 	//Aggiornamento profilo utente da utente
 	@PutMapping
@@ -106,7 +101,9 @@ public class UtenteController {
     	existingUtente.setNome(utente.getNome());
     	existingUtente.setCognome(utente.getCognome());
     	existingUtente.setEmail(utente.getEmail());
-    	existingUtente.setPassword(utente.getPassword());
+    	if (utente.getPassword() != null && utente.getPassword().trim().contentEquals("")) {
+    		existingUtente.setPassword(utente.getPassword());    		
+    	}
     	
     	utenteRepository.save(existingUtente); 
     	return new ResponseEntity<>(existingUtente, HttpStatus.OK);
