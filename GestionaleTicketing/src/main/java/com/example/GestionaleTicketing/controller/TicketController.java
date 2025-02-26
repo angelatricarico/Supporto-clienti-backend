@@ -31,6 +31,7 @@ import com.example.GestionaleTicketing.service.TokenService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
 @RestController
@@ -78,6 +79,7 @@ public class TicketController {
 	
 	//Creazione nuovo ticket da utente
 	@PostMapping
+	@Transactional
 	public ResponseEntity<String>  createTicket(@Valid @RequestBody TicketDto ticketDto, HttpServletRequest request, HttpServletResponse response) {
 	    Optional<Utente> optionalUtente = getAuthUser(request);
 	   
@@ -97,7 +99,6 @@ public class TicketController {
 	    ticket.setCategoriaTicket(optionalCategoria.get());  
 	    ticket.setUtente(optionalUtente.get());
 	    ticket.setOperatore(assegnazioneService.findOperatoreConMinimiTicket(ticket.getCategoriaTicket()).get());  //assegnazione poi automatica di operatore
-
 	    ticket = ticketRepository.save(ticket);  
 	    
 	    Messaggio messaggio = new Messaggio();
