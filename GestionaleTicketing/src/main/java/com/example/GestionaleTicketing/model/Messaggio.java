@@ -6,6 +6,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 @Entity
 public class Messaggio {
@@ -14,6 +16,8 @@ public class Messaggio {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	Long id;
 	
+	@NotBlank(message = "Messaggio ticket è obbligatorio")
+	@Size(min = 100, max = 500)
 	private String corpoUtente;
 	
 	private String corpoOperatore;
@@ -55,7 +59,6 @@ public class Messaggio {
 	public void setCorpoOperatore(String corpoOperatore) {
 		this.corpoOperatore = corpoOperatore;
 	}
-	
 	
 	
 

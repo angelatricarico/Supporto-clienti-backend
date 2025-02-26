@@ -2,12 +2,21 @@ package com.example.GestionaleTicketing.dto;
 
 import com.example.GestionaleTicketing.model.Ticket.Status;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
+
 
 public class TicketDto {
 	
+	
     private String testoMessaggio;
+    
+	@NotNull(message = "Id Categoria cannot be null")
     private Long idCategoria;
+    
     private String oggetto;
+	
     private Status status;  // Ora usa l'Enum corretto
 
 

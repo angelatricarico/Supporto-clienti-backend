@@ -26,6 +26,7 @@ import com.example.GestionaleTicketing.repository.CategoriaTicketRepository;
 import com.example.GestionaleTicketing.repository.MessaggioRepository;
 import com.example.GestionaleTicketing.repository.TicketRepository;
 import com.example.GestionaleTicketing.repository.UtenteRepository;
+import com.example.GestionaleTicketing.service.AssegnazioneService;
 import com.example.GestionaleTicketing.service.TokenService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -53,6 +54,9 @@ public class TicketController {
 	@Autowired
 	CategoriaTicketRepository categoriaTicketRepository;
 	
+	@Autowired
+	AssegnazioneService assegnazioneService;
+	
 
 
 	//Visualizzazione tickets a seconda dei controlli effettuati sul token e ruolo
@@ -75,9 +79,8 @@ public class TicketController {
 	//Creazione nuovo ticket da utente
 	@PostMapping
 	public ResponseEntity<String>  createTicket(@Valid @RequestBody TicketDto ticketDto, HttpServletRequest request, HttpServletResponse response) {
-		
 	    Optional<Utente> optionalUtente = getAuthUser(request);
-	    
+	   
 	    if (!optionalUtente.isPresent()) {
 	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Utente non trovato");
 	    }
@@ -92,8 +95,8 @@ public class TicketController {
 	    ticket.setStatus(Status.APERTO); 
 	    ticket.setDataApertura(LocalDate.now());  
 	    ticket.setCategoriaTicket(optionalCategoria.get());  
-	    ticket.setUtente(optionalUtente.get());  
-	    ticket.setOperatore(null);  //assegnazione poi automatica di operatore
+	    ticket.setUtente(optionalUtente.get());
+	    ticket.setOperatore(assegnazioneService.findOperatoreConMinimiTicket(ticket.getCategoriaTicket()).get());  //assegnazione poi automatica di operatore
 
 	    ticket = ticketRepository.save(ticket);  
 	    
@@ -113,8 +116,8 @@ public class TicketController {
 	
 	//Aggiornamento ticket in particolare da operatore (manuale e automatico per la data di chiusura)
 	@PutMapping("/{id}")
-	public ResponseEntity<?> updateTicket(@PathVariable Long id, @Valid @RequestBody TicketDto ticketDto, HttpServletRequest request) {
-		
+	public Object updateTicket(@PathVariable Long id, @Valid @RequestBody TicketDto ticketDto, HttpServletRequest request, HttpServletResponse response) {
+		System.out.println(ticketDto.getIdCategoria());
 	    Optional<Utente> optOperatore = getAuthUser(request);
 		
 	    if (!optOperatore.isPresent() || optOperatore.get().getRuolo() != Utente.Ruolo.Operatore) {
@@ -151,8 +154,6 @@ public class TicketController {
 
 	    return ResponseEntity.ok(existingTicket);
 	}
-	
-	
 	
 	
 	private Optional<Utente> getAuthUser(HttpServletRequest request) {
