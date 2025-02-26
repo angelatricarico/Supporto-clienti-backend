@@ -76,7 +76,7 @@ public class TicketController {
 	@PostMapping
 	public ResponseEntity<String>  createTicket(@Valid @RequestBody TicketDto ticketDto, HttpServletRequest request, HttpServletResponse response) {
 		
-	    Optional<Utente> optionalUtente = utenteRepository.findById(ticketDto.getUtenteId());
+	    Optional<Utente> optionalUtente = getAuthUser(request);
 	    
 	    if (!optionalUtente.isPresent()) {
 	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Utente non trovato");

@@ -5,22 +5,11 @@ import com.example.GestionaleTicketing.model.Ticket.Status;
 
 public class TicketDto {
 	
-
-	private Long utenteId;
     private String testoMessaggio;
     private Long idCategoria;
     private String oggetto;
     private Status status;  // Ora usa l'Enum corretto
 
-
-    // Getter e Setter
-    public Long getUtenteId() {
-        return utenteId;
-    }
-
-    public void setUtenteId(Long utenteId) {
-        this.utenteId = utenteId;
-    }
 
     public String getTestoMessaggio() {
         return testoMessaggio;
