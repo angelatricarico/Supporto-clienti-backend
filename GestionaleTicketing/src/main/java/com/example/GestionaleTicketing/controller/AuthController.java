@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,6 +15,7 @@ import com.example.GestionaleTicketing.model.Utente;
 import com.example.GestionaleTicketing.repository.UtenteRepository;
 import com.example.GestionaleTicketing.service.TokenService;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
@@ -53,5 +55,30 @@ public class AuthController {
 	}
 	
 	
+	@GetMapping("/logout")
+	public void logout(HttpServletRequest request, HttpServletResponse response) {
+		Optional<Utente> optUtente = getAuthUser(request);
+		optUtente.get().setToken(null);
+		utenteRepository.save(optUtente.get());
+	}
 	
+
+	private Optional<Utente> getAuthUser(HttpServletRequest request) {
+        // Legge l'header "Authorization"
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader != null && !authHeader.isEmpty()) {
+            String token;
+            // Se il token è inviato come "Bearer <token>", lo estrae
+            if (authHeader.startsWith("Bearer ")) {
+                token = authHeader.substring(7);
+            } else {
+                token = authHeader;
+            }
+            // Usa il TokenService per ottenere l'utente associato al token
+            return tokenService.getAuthUser(token);
+        }
+        System.out.println("Se non c'è header \"Authorization\", restituisce null");
+        // Se non c'è header "Authorization", restituisce null
+        return null;
+	}
 }
