@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.example.GestionaleTicketing.dto.TicketCountDto;
 import com.example.GestionaleTicketing.dto.TicketDto;
@@ -81,6 +82,28 @@ public class TicketController {
 			return ticketRepository.findAll();
 		}
 	}
+	
+	@GetMapping("/{id}")
+	public ResponseEntity<TicketDto> getTicketById(@PathVariable Long id) {
+	    Ticket ticket = ticketRepository.findById(id)
+	        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket non trovato"));
+
+	    TicketDto ticketDto = new TicketDto();
+	    ticketDto.setOggetto(ticket.getOggetto());
+	    ticketDto.setStatus(ticket.getStatus());
+	    ticketDto.setIdCategoria(ticket.getCategoriaTicket() != null ? ticket.getCategoriaTicket().getId() : null);
+
+	    // Se il messaggio esiste, assegna il corpo utente
+	    if (ticket.getMessaggio() != null) {
+	        ticketDto.setTestoMessaggio(ticket.getMessaggio().getCorpoUtente());
+	    } else {
+	        ticketDto.setTestoMessaggio(null);
+	    }
+
+	    return ResponseEntity.ok(ticketDto);
+	}
+
+
 	
 	
 	
