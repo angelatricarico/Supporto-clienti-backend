@@ -17,7 +17,6 @@ public class Messaggio {
 	Long id;
 	
 	@NotBlank(message = "Messaggio ticket è obbligatorio")
-	@Size(min = 100, max = 500)
 	private String corpoUtente;
 	
 	private String corpoOperatore;
