@@ -2,7 +2,9 @@ package com.example.GestionaleTicketing.controller;
 
 import java.time.LocalDate;
 import java.util.Collections;
+	import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.GestionaleTicketing.dto.TicketCountDto;
 import com.example.GestionaleTicketing.dto.TicketDto;
 import com.example.GestionaleTicketing.model.CategoriaTicket;
 import com.example.GestionaleTicketing.model.Messaggio;
@@ -28,6 +31,7 @@ import com.example.GestionaleTicketing.repository.MessaggioRepository;
 import com.example.GestionaleTicketing.repository.TicketRepository;
 import com.example.GestionaleTicketing.repository.UtenteRepository;
 import com.example.GestionaleTicketing.service.AssegnazioneService;
+import com.example.GestionaleTicketing.service.DataService;
 import com.example.GestionaleTicketing.service.TokenService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -40,6 +44,8 @@ import jakarta.validation.Valid;
 @CrossOrigin ("*")
 
 public class TicketController {
+	@Autowired
+	DataService dataService;	
 	
 	@Autowired
 	TokenService tokenService;
@@ -119,7 +125,6 @@ public class TicketController {
 	//Aggiornamento ticket in particolare da operatore (manuale e automatico per la data di chiusura)
 	@PutMapping("/{id}")
 	public Object updateTicket(@PathVariable Long id, @Valid @RequestBody TicketDto ticketDto, HttpServletRequest request, HttpServletResponse response) {
-		System.out.println(ticketDto.getIdCategoria());
 	    Optional<Utente> optOperatore = getAuthUser(request);
 		
 	    if (!optOperatore.isPresent() || optOperatore.get().getRuolo() != Utente.Ruolo.Operatore) {
@@ -157,6 +162,20 @@ public class TicketController {
 	    return ResponseEntity.ok(existingTicket);
 	}
 	
+	@GetMapping("/data")
+	public Object getData(HttpServletRequest request) {
+	    Optional<Utente> optOperatore = getAuthUser(request);
+		
+	    if (!optOperatore.isPresent() || optOperatore.get().getRuolo() != Utente.Ruolo.Operatore) {
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Collections.singletonMap("message", "Autenticazione richiesta o operatore non presente"));
+	    }
+	    
+		Map<String, List<TicketCountDto>> result = new LinkedHashMap<>();
+		result.put("opened", dataService.getAllTicketsCountByMonth());
+		result.put("closed", dataService.getAllClosedTicketsCountByMonth());
+		return result;
+		
+	}
 	
 	private Optional<Utente> getAuthUser(HttpServletRequest request) {
         // Legge l'header "Authorization"
@@ -174,6 +193,6 @@ public class TicketController {
         }
         System.out.println("Se non c'è header \"Authorization\", restituisce null");
         // Se non c'è header "Authorization", restituisce null
-        return null;
+        return Optional.empty();
 	}
 }
