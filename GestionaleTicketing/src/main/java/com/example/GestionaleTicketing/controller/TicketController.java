@@ -1,6 +1,7 @@
 package com.example.GestionaleTicketing.controller;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,6 +32,7 @@ import com.example.GestionaleTicketing.service.TokenService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
 @RestController
@@ -78,16 +80,17 @@ public class TicketController {
 	
 	//Creazione nuovo ticket da utente
 	@PostMapping
-	public ResponseEntity<String>  createTicket(@Valid @RequestBody TicketDto ticketDto, HttpServletRequest request, HttpServletResponse response) {
+	@Transactional
+	public Object createTicket(@Valid @RequestBody TicketDto ticketDto, HttpServletRequest request, HttpServletResponse response) {
 	    Optional<Utente> optionalUtente = getAuthUser(request);
 	   
 	    if (!optionalUtente.isPresent()) {
-	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Utente non trovato");
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("message", "Utente non trovato"));
 	    }
 
 	    Optional<CategoriaTicket> optionalCategoria = categoriaTicketRepository.findById(ticketDto.getIdCategoria());
 	    if (!optionalCategoria.isPresent()) {
-	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Categoria non trovata");
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("message", "Categoria non trovata"));
 	    }
 
 	    Ticket ticket = new Ticket();
@@ -97,7 +100,6 @@ public class TicketController {
 	    ticket.setCategoriaTicket(optionalCategoria.get());  
 	    ticket.setUtente(optionalUtente.get());
 	    ticket.setOperatore(assegnazioneService.findOperatoreConMinimiTicket(ticket.getCategoriaTicket()).get());  //assegnazione poi automatica di operatore
-
 	    ticket = ticketRepository.save(ticket);  
 	    
 	    Messaggio messaggio = new Messaggio();
@@ -109,7 +111,7 @@ public class TicketController {
 	    ticketRepository.save(ticket);
 
 
-	    return ResponseEntity.ok("Ticket creato con successo! ID: " + ticket.getId());
+	    return ResponseEntity.ok(Collections.singletonMap("message", "Ticket creato con successo! ID: " + ticket.getId()));
 	}
 	
 	
@@ -121,18 +123,18 @@ public class TicketController {
 	    Optional<Utente> optOperatore = getAuthUser(request);
 		
 	    if (!optOperatore.isPresent() || optOperatore.get().getRuolo() != Utente.Ruolo.Operatore) {
-	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Autenticazione richiesta o operatore non presente");
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Collections.singletonMap("message", "Autenticazione richiesta o operatore non presente"));
 	    }
 
 	    Optional<Ticket> optTicket = ticketRepository.findById(id);
 	    if (!optTicket.isPresent()) {
-	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Ticket non trovato");
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("message", "Ticket non trovato"));
 	    }
 	    
 	    Ticket existingTicket = optTicket.get();
 	    
 	    if (existingTicket.getStatus() == Ticket.Status.CHIUSO || optOperatore.get().getCategoriaTicket() != existingTicket.getCategoriaTicket()) {
-	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Non sei autorizzato");
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Collections.singletonMap("message", "Non sei autorizzato"));
 
 	    }
 	    
@@ -144,7 +146,7 @@ public class TicketController {
 			    messaggio.setCorpoOperatore(ticketDto.getTestoMessaggio());
 			    messaggioRepository.save(messaggio);	
 	    	} else {
-		        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Non puoi chiudere il ticket senza aggiungere un messaggio");
+		        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(Collections.singletonMap("message", "Non puoi chiudere il ticket senza aggiungere un messaggio"));
 	    	}
 	  
 	    }

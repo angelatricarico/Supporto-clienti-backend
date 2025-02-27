@@ -2,6 +2,9 @@ package com.example.GestionaleTicketing.model;
 
 import java.time.LocalDate;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
@@ -52,10 +55,11 @@ public class Ticket {
 	
 	@ManyToOne
 	@JoinColumn(name = "idOperatore")
-	//@OnDelete(action = OnDeleteAction.SET_NULL)
 	private Utente operatore;
 	
-	@OneToOne(mappedBy = "ticket", cascade = CascadeType.ALL)
+	
+	@OneToOne(mappedBy = "ticket", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private Messaggio messaggio;
 	
 

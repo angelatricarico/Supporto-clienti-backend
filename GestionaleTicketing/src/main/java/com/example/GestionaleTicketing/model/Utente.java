@@ -2,6 +2,8 @@ package com.example.GestionaleTicketing.model;
 
 import java.util.List;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.validator.constraints.Length;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -35,13 +37,9 @@ public class Utente {
 	Long id;
 	
 	@NotBlank(message = "Nome è obbligatorio")
-	@Column(unique = true)
-
 	private String nome;
 	
 	@NotBlank(message = "Cognome è obbligatorio")
-	@Column(unique = true)
-
 	private String cognome;
 	
 	@NotBlank(message = "Email è obbligatoria")
@@ -60,11 +58,13 @@ public class Utente {
 	@JoinColumn(name = "idCategoria")
 	private CategoriaTicket categoriaTicket;
 	
-	@OneToMany(mappedBy = "utente", cascade = CascadeType.REMOVE, orphanRemoval = true)
+	@OneToMany(mappedBy = "utente", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JsonIgnore
 	private List<Ticket> tickets;
 	
-	@OneToMany(mappedBy = "operatore")
+	@OneToMany(mappedBy = "operatore", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OnDelete(action = OnDeleteAction.SET_NULL)
 	@JsonIgnore
 	private List<Ticket> ticketsOperatore;
 	
