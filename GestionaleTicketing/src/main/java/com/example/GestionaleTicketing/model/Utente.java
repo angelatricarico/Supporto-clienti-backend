@@ -48,7 +48,6 @@ public class Utente {
 	private String email;
 	
 	@NotBlank(message = "Password è obbligatoria")
-    @Length(min = 5, max = 10, message = "Password deve essere minimo di 5 e massimo 10 caratteri")
 	private String password;
 	
 	@JsonIgnore
@@ -70,8 +69,33 @@ public class Utente {
 	
 	@Enumerated(EnumType.STRING)
 	private Ruolo ruolo;
+	
+	public Utente() {
+		
+	}
 
+	public Utente(Long id, String nome, String cognome, String email, String password, Ruolo ruolo) {
+		super();
+		this.id = id;
+		this.nome = nome;
+		this.cognome = cognome;
+		this.email = email;
+		this.password = password;
+		this.ruolo = ruolo;
+	}
+	
+	public Utente(Long id, String nome, String cognome, String email, String password, Ruolo ruolo, CategoriaTicket categoriaTicket) {
+		super();
+		this.id = id;
+		this.nome = nome;
+		this.cognome = cognome;
+		this.email = email;
+		this.password = password;
+		this.ruolo = ruolo;
+		this.categoriaTicket = categoriaTicket;
+	}
 
+	
 	public Long getId() {
 		return id;
 	}

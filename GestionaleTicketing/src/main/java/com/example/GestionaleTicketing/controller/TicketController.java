@@ -189,7 +189,7 @@ public class TicketController {
 	public Object getData(HttpServletRequest request) {
 	    Optional<Utente> optOperatore = getAuthUser(request);
 		
-	    if (!optOperatore.isPresent() || optOperatore.get().getRuolo() != Utente.Ruolo.Operatore) {
+	    if (!optOperatore.isPresent() || optOperatore.get().getRuolo() != Utente.Ruolo.Admin) {
 	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Collections.singletonMap("message", "Autenticazione richiesta o operatore non presente"));
 	    }
 	    

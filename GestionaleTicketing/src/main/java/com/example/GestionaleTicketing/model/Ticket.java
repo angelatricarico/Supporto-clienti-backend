@@ -24,28 +24,25 @@ import jakarta.validation.constraints.NotBlank;
 @Entity
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Ticket {
-	
+
 	public enum Status {
-		APERTO,
-		VISUALIZZATO,
-		IN_LAVORAZIONE,
-		CHIUSO
+		APERTO, VISUALIZZATO, IN_LAVORAZIONE, CHIUSO
 	}
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@NotBlank(message = "Oggetto ticket è obbligatorio")
 	private String oggetto;
-	
+
 	@Enumerated(EnumType.STRING)
 	private Status status;
-	
+
 	private LocalDate dataApertura;
-	
+
 	private LocalDate dataChiusura;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "idCategoria")
 	private CategoriaTicket categoriaTicket;
@@ -53,17 +50,30 @@ public class Ticket {
 	@ManyToOne
 	@JoinColumn(name = "idUtente", nullable = false)
 	private Utente utente;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "idOperatore")
 	private Utente operatore;
-	
-	
+
 	@OneToOne(mappedBy = "ticket", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private Messaggio messaggio;
 
-	
+	public Ticket() {
+
+	}
+
+	public Ticket(Long id, String oggetto, Status status, LocalDate dataApertura, CategoriaTicket categoriaTicket, Utente utente,
+			Utente operatore) {
+		super();
+		this.id = id;
+		this.oggetto = oggetto;
+		this.status = status;
+		this.dataApertura = dataApertura;
+		this.categoriaTicket = categoriaTicket;
+		this.utente = utente;
+		this.operatore = operatore;
+	}
 
 	public Long getId() {
 		return id;
@@ -132,12 +142,9 @@ public class Ticket {
 	public Messaggio getMessaggio() {
 		return messaggio;
 	}
-	
-	
+
 	public void setMessaggio(Messaggio messaggio) {
 		this.messaggio = messaggio;
 	}
-	
-	
 
 }

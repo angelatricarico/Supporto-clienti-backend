@@ -36,6 +36,17 @@ public class CategoriaTicket {
 	@JsonIgnore
 	private List<Ticket> tickets;
 
+	
+
+	public CategoriaTicket(Long id, String nomeCategoria) {
+		super();
+		this.id = id;
+		this.nomeCategoria = nomeCategoria;
+	}
+	
+	public CategoriaTicket() {
+	}
+	
 	public Long getId() {
 		return id;
 	}
