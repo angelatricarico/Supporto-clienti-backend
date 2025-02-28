@@ -42,6 +42,7 @@ public class UtenteController {
 	@PostMapping
 	public Utente createUtente(@Valid @RequestBody Utente utente) {
 		utente.setRuolo(Utente.Ruolo.Utente);
+		System.out.println(utente.getRuolo() + "utente1");
 		return utenteRepository.save(utente);
 	}
 	
@@ -55,6 +56,7 @@ public class UtenteController {
             return Collections.singletonMap("message", "Autenticazione richiesta");
 		}
 		utente.setRuolo(Utente.Ruolo.Operatore);
+		System.out.println(utente.getRuolo());
 		return utenteRepository.save(utente);
 	}
 	
